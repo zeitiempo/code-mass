@@ -1,5 +1,6 @@
 # coding:utf-8 #
 
+# check NER-Collection
 # flow format: [single char][sep][bio tag which is 'B or I or O']-[ner type]\n
 
 import codecs
