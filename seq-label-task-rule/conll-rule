@@ -1,0 +1,14 @@
+
+
+[common format of tensor dataset]
+
+    [attr1 usually char][sep][attr2][sep]...[attrn][sep][gold]
+    if [char] != [attr1] then
+        [attr no.] of [char] should be specified
+    endif
+    [sep] must be different from the symbol in [char]
+
+[format of conlleval input]
+
+    1 1 [gold] [pred]
+
