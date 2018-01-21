@@ -23,51 +23,25 @@ dmk_url = sp.find('span', class_='Data_Ass').\
 		  find_all('a')[1]['href']
 
 print(vd_url)
-print(dmk_url)
+print(dmk_url) #直接下载
 
-# dmk_fll_url = r'http://www.jijidown.com'+dmk_url
-# urllib.urlretrieve(dmk_fll_url, 'dev_dmk')
-vd_fll_url = r'http://www.jijidown.com'+vd_url
+vd_code = vd_url.split('/')[-1]+'.php'
 
-'''
-dl_rqst = Request(vd_fll_url, headers=headers)
-dl_html = urlopen(dl_rqst).read()
-dl_sp = bsoup(dl_html, 'html.parser')
-dl_fll_url = dl_sp.find_all('a')
-thdr_url = r''
+vd_fll_url = r'http://www.jijidown.com/FreeDown/'+vd_code
 
-for dl_url in dl_fll_url:
-	precent_hrf = dl_url['href']
-	if 'thunder:' in precent_hrf:
-		thdr_url = precent_hrf
+for i in range(2):
+	opts = webdriver.ChromeOptions()
+	opts.add_extension("fpdnjdlbdmifoocedhkighhlbchbiikl_3_2_1.crx")
+	brwsr = webdriver.Chrome(chrome_options=opts)
+	brwsr.get(vd_fll_url)
+	js_ = brwsr.find_elements_by_tag_name('script')
 
-with open('thdr_url', 'wb') as f:
-	f.write(thdr_url)
+for js in js_:
+	js_ctxt = js.get_attribute('innerHTML')
+	if "ctfile" in js_ctxt:
+		dl_url = js_ctxt.split('\n')[3].split('\"')[1]
+		print(dl_url)
 
-/html/body/div[2]/div[3]/div[6]/span[2]/a[3]
-
-print(thdr_url)
-'''
-opts = webdriver.ChromeOptions()
-opts.add_extension("fpdnjdlbdmifoocedhkighhlbchbiikl_3_2_1.crx")
-brwsr = webdriver.Chrome(chrome_options=opts)
-brwsr.get(vd_fll_url)
-brwsr.refresh()
-current_url = brwsr.current_url
-print(current_url)
-change_url = current_url.split(r'?')[0].replace(r'asp', 'php#')
-print(change_url)
-brwsr.get(change_url)
-js_ = brwsr.find_elements_by_tag_name('script')
-
-dv_dl_url_pttn = re.compile('http')
-
-with codecs.open('js', 'w', 'utf-8') as f_js:
-	for js in js_:
-		js_ctxt = js.get_attribute('innerHTML')
-		if "ctfile" in js_ctxt:
-			f_js.write(js_ctxt+'\n')
-			if re.match(dv_dl_url_pttn, js_ctxt):
-				print(re.match(dv_dl_url_pttn, js_ctxt).group[0])
-
-brwsr.quit()
+brwsr.get(dl_url)
+brwsr.find_element_by_id('free_down_link').click()
+# brwsr.quit()
